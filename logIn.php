@@ -5,7 +5,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    // Query database
+    
     $query = "SELECT id FROM users WHERE username='$username' AND password='$password'";
     $result = $conn->query($query);
 
