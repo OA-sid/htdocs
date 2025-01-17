@@ -2,10 +2,10 @@
 include 'db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    $username = $_POST['username'] ?? '';
+    $password = $_POST['password'] ?? '';
 
-    
+    // Query the database
     $query = "SELECT id FROM users WHERE username='$username' AND password='$password'";
     $result = $conn->query($query);
 

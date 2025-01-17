@@ -1,3 +1,11 @@
 <Files "password.html">
     Require all denied
 </Files>
+
+RewriteEngine On
+
+# Redirect for secret file (e.g., localhost/1.txt)
+RewriteRule ^([0-9]+)\.txt$ text_file.php?file=$1.txt [L]
+
+# Redirect for encoded user profile (e.g., localhost/user?profile=dXNlcjE=)
+RewriteRule ^user$ encoded_user.php [L,QSA]
