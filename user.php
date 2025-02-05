@@ -1,19 +1,20 @@
 <?php
 include 'db.php';
 
-$userId = $_GET['id'];
-$query = "SELECT username FROM users WHERE id=$userId";
+$userId = $_GET['id'] ?? null;
+$query = "SELECT username, is_admin FROM users WHERE id=$userId";
 $result = $conn->query($query);
 
 if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
-    echo "<h1>Welcome, " . htmlspecialchars($row['username']) . "</h1>";
-    echo "<a href='username.html'>View Username Page</a>";
-    echo "<br><a href='$userId.txt'>Secret File</a>"; // Link to user-specific text file
+    $username = $row['username'];
+    $isAdmin = $row['is_admin'];
 
-    // Generate Base64 encoded link
-    $base64Profile = base64_encode($row['username']);
-    echo "<br><a href='encoded_user.php?profile=$base64Profile'>View Encoded Profile</a>";
+    echo "<h1>Welcome, " . htmlspecialchars($username) . "</h1>";
+    echo "<p>Your session token: " . ($_COOKIE['session_token'] ?? 'None') . "</p>";
+
+    // Link to intentionally vulnerable admin panel
+    echo "<br><a href='adminpanel.php'>Go to Admin Panel</a>";
 } else {
     echo "User not found.";
 }

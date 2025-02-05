@@ -12,6 +12,7 @@
         <input type="password" name="password" required><br><br>
         <button type="submit">Login</button>
     </form>
+
     <br>
     <h1>Register</h1>
     <form method="POST" action="register.php">
@@ -19,6 +20,11 @@
         <input type="text" name="username" required><br><br>
         <label>Password:</label>
         <input type="password" name="password" required><br><br>
+        <label>Role:</label>
+        <select name="role">
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+        </select><br><br>
         <button type="submit">Register</button>
     </form>
 </body>
