@@ -10,14 +10,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die("Please provide both username and password.");
     }
 
-    // Check if the username already exists
-    $checkQuery = "SELECT * FROM users WHERE username = '$username'";
-    $result = $conn->query($checkQuery);
-
-    if ($result->num_rows > 0) {
-        die("Username already exists. Please choose a different username.");
-    }
-
     // Insert into database
     $query = "INSERT INTO users (username, password, role) VALUES ('$username', '$password', '$role')";
     if ($conn->query($query) === TRUE) {
