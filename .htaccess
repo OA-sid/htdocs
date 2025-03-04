@@ -1,0 +1,11 @@
+RewriteEngine On
+
+# Existing rules if any should be above
+
+# Handle .json bypass
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.+)\.json$ json_bypass.php?file=$1.json [L,QSA]
+
+# Block direct access to files without .json
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^jsonbypass\.txt$ - [F,L]
