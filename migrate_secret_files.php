@@ -1,7 +1,22 @@
-<!DOCTYPE html>
+<?php
+include 'db.php';
+
+// Get all users
+$query = "SELECT id, username, role FROM users";
+$result = $conn->query($query);
+
+$count = 0;
+while ($user = $result->fetch_assoc()) {
+    $userId = $user['id'];
+    $username = $user['username'];
+    $role = $user['role'];
+    
+    // Create new HTML secret file
+    $newFilePath = __DIR__ . "/secret_$userId.html";
+    $fileContent = "<!DOCTYPE html>
 <html>
 <head>
-    <title>Secret File - am</title>
+    <title>Secret File - $username</title>
     <link rel='stylesheet' href='styles.css'>
 </head>
 <body>
@@ -14,9 +29,9 @@
         <div class='content-box'>
             <h2>User Details</h2>
             <ul class='info-list'>
-                <li><strong>Username:</strong> am</li>
-                <li><strong>Role:</strong> <span class='role-badge'>user</span></li>
-                <li><strong>User ID:</strong> 10</li>
+                <li><strong>Username:</strong> $username</li>
+                <li><strong>Role:</strong> <span class='role-badge'>$role</span></li>
+                <li><strong>User ID:</strong> $userId</li>
             </ul>
         </div>
 
@@ -39,8 +54,23 @@
         </div>
 
         <div class='nav-links'>
-            <a href='user.php?id=10'>Back to Profile</a>
+            <a href='user.php?id=$userId'>Back to Profile</a>
         </div>
     </div>
 </body>
-</html>
+</html>";
+    
+    // Write new file
+    file_put_contents($newFilePath, $fileContent);
+    
+    // Try to remove old file if it exists
+    $oldFilePath = __DIR__ . "/$userId.txt";
+    if (file_exists($oldFilePath)) {
+        unlink($oldFilePath);
+    }
+    
+    $count++;
+}
+
+echo "Migration complete! Updated $count secret files.";
+?>

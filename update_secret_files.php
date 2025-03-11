@@ -1,7 +1,20 @@
-<!DOCTYPE html>
+<?php
+include 'db.php';
+
+// Get all user IDs and their information
+$query = "SELECT id, username, role FROM users";
+$result = $conn->query($query);
+
+while ($user = $result->fetch_assoc()) {
+    $userId = $user['id'];
+    $username = $user['username'];
+    $role = $user['role'];
+    
+    // Create new HTML content
+    $fileContent = "<!DOCTYPE html>
 <html>
 <head>
-    <title>Secret File - am</title>
+    <title>Secret File - $username</title>
     <link rel='stylesheet' href='styles.css'>
 </head>
 <body>
@@ -14,14 +27,15 @@
         <div class='content-box'>
             <h2>User Details</h2>
             <ul class='info-list'>
-                <li><strong>Username:</strong> am</li>
-                <li><strong>Role:</strong> <span class='role-badge'>user</span></li>
-                <li><strong>User ID:</strong> 10</li>
+                <li><strong>Username:</strong> $username</li>
+                <li><strong>Role:</strong> <span class='role-badge'>$role</span></li>
+                <li><strong>User ID:</strong> $userId</li>
             </ul>
         </div>
 
         <div class='content-box'>
             <h2>Private Notes</h2>
+            <p>This is your secure space. You can store your private notes and information here.</p>
             <div class='notes-area'>
                 <div class='note'>
                     <h3>Welcome Note</h3>
@@ -31,16 +45,19 @@
                     <h3>Security Reminder</h3>
                     <p>Remember to keep your login credentials safe and never share them with anyone.</p>
                 </div>
-                <div class='note'>
-                    <h3>Getting Started</h3>
-                    <p>Feel free to customize this space with your own private notes and information. Your data is kept secure and private.</p>
-                </div>
             </div>
         </div>
 
         <div class='nav-links'>
-            <a href='user.php?id=10'>Back to Profile</a>
+            <a href='user.php?id=$userId'>Back to Profile</a>
         </div>
     </div>
 </body>
-</html>
+</html>";
+    
+    // Write to file
+    file_put_contents(__DIR__ . "/$userId.txt", $fileContent);
+}
+
+echo "All secret files have been updated with the new styling!";
+?>

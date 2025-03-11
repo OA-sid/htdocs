@@ -3,7 +3,6 @@ include 'db.php';
 
 // Get user ID from URL parameter or cookie
 $userId = isset($_GET['id']) ? $_GET['id'] : ($_COOKIE['user_id'] ?? null);
-$token = $_COOKIE['session_token'] ?? null;
 
 if (!$userId) {
     die("Unauthorized access.");
@@ -16,19 +15,36 @@ if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
     $username = $row['username'];
     $role = $row['role'];
+?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Profile</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="user-info">
+            <h1>Welcome, <?php echo htmlspecialchars($username); ?></h1>
+            <p>Your role: <span class="role-badge"><?php echo htmlspecialchars($role); ?></span></p>
+        </div>
 
-    echo "<h1>Welcome, " . htmlspecialchars($username) . "</h1>";
-    echo "<p>Your role: " . htmlspecialchars($role) . "</p>";
-    if($token) {
-        echo "<p><strong>Session Token:</strong> " . htmlspecialchars($token) . "</p>";
-    }
-
-    echo "<a href='username.html'>View Username Page</a>";
-    echo "<br><a href='$userId.txt'>Secret File</a>";
-
-    // Vulnerable admin panel access
-    echo "<br><a href='adminpanel.php'>Access Admin Panel</a>";
+        <div class="content-box">
+            <h2>Quick Actions</h2>
+            <div class="nav-links">
+                <a href="username.html">View Username</a>
+                <a href="secret.php?id=<?php echo $userId; ?>">View Secret File</a>
+                <a href="adminpanel.php?id=<?php echo $userId; ?>">Access Admin Panel</a>
+                <a href="login.php">Logout</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<?php
 } else {
-    echo "User not found.";
+    echo '<div class="container"><div class="error">User not found.</div></div>';
 }
+
+$conn->close();
 ?>

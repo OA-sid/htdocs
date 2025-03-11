@@ -1,35 +1,59 @@
 <?php
-// Get session token
-$token = $_COOKIE['session_token'] ?? null;
+include 'db.php';
 
-if (!$token) {
-    die("Unauthorized access.");
+// Get user ID from URL parameter or cookie
+$userId = isset($_GET['id']) ? $_GET['id'] : ($_COOKIE['user_id'] ?? null);
+
+if (!$userId) {
+    die('<div class="container"><div class="error">Access denied - No user ID</div></div>');
 }
 
-// Connect to the database
-require_once 'config.php';
-$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+// Check if user is admin
+$query = "SELECT username, role FROM users WHERE id = $userId";
+$result = $conn->query($query);
 
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+if (!$result) {
+    die('<div class="container"><div class="error">Database error: ' . $conn->error . '</div></div>');
 }
 
-// Verify if the user has admin privileges
-$stmt = $conn->prepare("SELECT role FROM users WHERE session_token = ?");
-$stmt->bind_param("s", $token);
-$stmt->execute();
-$result = $stmt->get_result();
 $user = $result->fetch_assoc();
 
-if (!$user || $user['role'] !== 'admin') {
-    header("HTTP/1.1 403 Forbidden");
-    die("Access denied. This page is only accessible to administrators.");
+// Get all users if admin
+$allUsers = [];
+if ($user && $user['role'] === 'admin') {
+    $users_query = "SELECT id, username, role FROM users ORDER BY id";
+    $users_result = $conn->query($users_query);
+    while ($row = $users_result->fetch_assoc()) {
+        $allUsers[] = $row;
+    }
 }
+?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <?php if (!$user || $user['role'] !== 'admin'): ?>
+            <div class="error">Access denied</div>
+        <?php else: ?>
+            <div class="success">Access granted</div>
+            <div class="user-info">
+                <h1>Welcome <?php echo htmlspecialchars($user['username']); ?>!</h1>
+                <p>You have admin privileges.</p>
+            </div>
 
-// If we reach here, the user is an admin
-echo "<h1>Welcome to the Admin Panel</h1>";
-echo "<p>Welcome administrator! You have full access to manage the system.</p>";
+            
 
-$stmt->close();
+            <div class="nav-links">
+                <a href="user.php?id=<?php echo $userId; ?>">Back to Profile</a>
+            </div>
+        <?php endif; ?>
+    </div>
+</body>
+</html>
+<?php
 $conn->close();
 ?>
