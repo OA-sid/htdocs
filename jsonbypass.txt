@@ -1,1 +1,0 @@
-This is a test file that can only be accessed with .json extension

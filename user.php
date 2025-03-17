@@ -35,6 +35,10 @@ if ($result->num_rows > 0) {
                 <a href="username.html">View Username</a>
                 <a href="secret.php?id=<?php echo $userId; ?>">View Secret File</a>
                 <a href="adminpanel.php?id=<?php echo $userId; ?>">Access Admin Panel</a>
+                <a href="vulnerable_UserAdminAccess.php?set_token=user-1234">BAC Vulnerable Admin (user token)</a>
+                <a href="vulnerable_SecretArea.php?id=<?php echo $userId; ?>">Vulnerable Secret Area</a>
+                <a href="encoded_user.php?profile=<?php echo base64_encode($username); ?>">Encoded User Profile</a>
+                <a href="jsonbypass.txt" class="json-bypass">JSON Bypass</a>
                 <a href="login.php">Logout</a>
             </div>
         </div>

@@ -1,0 +1,9 @@
+{
+  "sensitive_data": {"database": {
+      "host": "localhost",
+      "username": "root",
+      "password": "",
+      "name": "vulnerability_tool"
+    }
+  }
+}
